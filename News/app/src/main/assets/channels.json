@@ -1,0 +1,54 @@
+{
+  "channels": [
+    {
+      "isSelected": true,
+      "name": "社会",
+      "type": "social"
+    },
+    {
+      "isSelected": true,
+      "name": "国内",
+      "type": "guonei"
+    },
+    {
+      "isSelected": true,
+      "name": "国际",
+      "type": "world"
+    },
+    {
+      "isSelected": true,
+      "name": "娱乐",
+      "type": "huabian"
+    },
+    {
+      "isSelected": true,
+      "name": "科技",
+      "type": "military"
+    },
+    {
+      "isSelected": true,
+      "name": "军事",
+      "type": "travel"
+    },
+    {
+      "isSelected": true,
+      "name": "旅游",
+      "type": "travel"
+    },
+    {
+      "isSelected": false,
+      "name": "体育",
+      "type": "tiyu"
+    },
+    {
+      "isSelected": false,
+      "name": "创业",
+      "type": "startup"
+    },
+    {
+      "isSelected": false,
+      "name": "健康",
+      "type": "health"
+    }
+  ]
+}

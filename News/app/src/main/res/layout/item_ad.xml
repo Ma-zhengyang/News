@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/ivImage"
+        android:layout_width="180dp"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_image_ad" />
+
+    <com.beardedhen.androidbootstrap.BootstrapDropDown
+        android:id="@+id/bootstrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        app:bootstrapBrand="regular"
+        app:bootstrapExpandDirection="down"
+        app:bootstrapSize="sm"
+        app:bootstrapText="@string/ad"
+        app:dropdownResource="@array/ad_dropdown"
+        app:roundedCorners="true"
+        app:showOutline="true" />
+
+</RelativeLayout>
+
+

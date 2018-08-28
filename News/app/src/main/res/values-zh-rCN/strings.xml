@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">新闻</string>
+    <string name="ad">广告</string>
+
+    <array name="ad_dropdown">
+        <item>不感兴趣</item>
+        <item>{dropdown_separator}</item>
+        <item>Separated item</item>
+        <item>{dropdown_separator}</item>
+        <item>Separated item</item>
+    </array>
+
+</resources>

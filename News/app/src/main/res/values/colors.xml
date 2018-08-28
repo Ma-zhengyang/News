@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@android:color/holo_blue_light</color><!--Appbar背景色-->
+    <color name="colorPrimaryDark">@android:color/holo_blue_dark</color><!--状态栏颜色-->
+    <color name="colorAccent">@android:color/holo_blue_bright</color><!--控制各个控件被选中时的颜色-->
+    <color name="colorGray">#CCCCCCCC</color>
+    <color name="colorWhite">#FFFFFFFF</color>
+    <color name="colorBlack">#FF000000</color>
+</resources>
