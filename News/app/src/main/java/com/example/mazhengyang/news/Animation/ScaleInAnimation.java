@@ -2,6 +2,7 @@ package com.example.mazhengyang.news.Animation;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.view.View;
 
 /**
@@ -21,7 +22,7 @@ public class ScaleInAnimation implements BaseAnimation{
     }
 
     @Override
-    public Animator[] getAnimators(View view) {
+    public ValueAnimator[] getAnimators(View view) {
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", mFrom, 1f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", mFrom, 1f);
         return new ObjectAnimator[] { scaleX, scaleY };

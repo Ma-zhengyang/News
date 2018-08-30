@@ -1,6 +1,8 @@
 package com.example.mazhengyang.news.Model;
 
-import com.example.mazhengyang.news.NetApi.RetrofitService;
+import android.util.Log;
+
+import com.example.mazhengyang.news.NetApi.RetrofitFactory;
 import com.example.mazhengyang.news.Bean.NewsBean;
 import com.example.mazhengyang.news.util.Logger;
 
@@ -10,6 +12,7 @@ import java.net.UnknownHostException;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -24,7 +27,7 @@ public class NewsModelImpl implements INewsModel {
     public void loadData(final String type, final int num, final int page, final IDataToPresent listen) {
         Logger.d(TAG, "loadData: type " + type);
 
-        RetrofitService.Builder().getNewsList(type, num, page)
+        RetrofitFactory.Builder().getNewsList(type, num, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<NewsBean>() {

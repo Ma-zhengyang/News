@@ -13,7 +13,7 @@
         android:layout_width="180dp"
         android:layout_height="120dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_image_ad" />
+        android:src="@drawable/advert" />
 
     <com.beardedhen.androidbootstrap.BootstrapDropDown
         android:id="@+id/bootstrap"

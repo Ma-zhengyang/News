@@ -8,24 +8,24 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mazhengyang.news.NewsDetailActivity;
+import com.example.mazhengyang.news.Adapter.NewsAdapter;
+import com.example.mazhengyang.news.Animation.ScaleInAnimation;
 import com.example.mazhengyang.news.Animation.SlideInRightAnimation;
 import com.example.mazhengyang.news.Bean.NewsBean;
+import com.example.mazhengyang.news.NewsDetailActivity;
 import com.example.mazhengyang.news.Present.INewsPresent;
 import com.example.mazhengyang.news.Present.NewsPresentImpl;
 import com.example.mazhengyang.news.R;
 import com.example.mazhengyang.news.View.INewsView;
 import com.example.mazhengyang.news.util.Logger;
-import com.example.mazhengyang.news.Adapter.NewsAdapter;
 import com.example.mazhengyang.news.util.RecycleViewDivider;
+import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
@@ -75,7 +75,7 @@ public class ContentFragment extends Fragment implements INewsView {
             Context context = getActivity().getApplicationContext();
             mNewsAdapter = new NewsAdapter(context);
             mNewsAdapter.setOnNewsItemClickListener(mOnNewsItemClickListener);
-            mNewsAdapter.openLoadAnimation(new SlideInRightAnimation());
+            mNewsAdapter.openLoadAnimation(new ScaleInAnimation());
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             //添加Android自带的分割线
 //            mRecyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
@@ -87,7 +87,7 @@ public class ContentFragment extends Fragment implements INewsView {
             mRecyclerView.setItemAnimator(defaultItemAnimator);
             mRecyclerView.setAdapter(mNewsAdapter);
 
-//        mRefreshLayout.setRefreshHeader(new ClassicsHeader(getActivity().getApplicationContext()));
+            mRefreshLayout.setRefreshHeader(new MaterialHeader(context));
             mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
 
                 @Override
@@ -148,11 +148,12 @@ public class ContentFragment extends Fragment implements INewsView {
         mRefreshLayout.finishRefresh();
         mRefreshLayout.finishLoadMore();
         mNewsAdapter.add(newsBean);
+        mNewsAdapter.addAdvert(15);
+        page++;
     }
 
     private void load() {
         mNewsPresent.loadData(type, 10, page);
-        page++;
     }
 
     private void startDetail(View view, int position) {
@@ -174,11 +175,11 @@ public class ContentFragment extends Fragment implements INewsView {
         }
     }
 
-    private void deleteAd(int position) {
+    private void deleteAdvert(int position) {
         mNewsAdapter.remove(position);
         int count = mNewsAdapter.getItemCount();
         if (count < 10) {
-            Log.d(TAG, "onAdItemTagClick: onLoadMore");
+            Logger.d(TAG, "onAdItemTagClick: onLoadMore");
             mRefreshLayout.autoLoadMore();
         }
     }
@@ -191,14 +192,12 @@ public class ContentFragment extends Fragment implements INewsView {
         }
 
         @Override
-        public void onAdDropDownClick(int id, int position) {
+        public void onAdvertDropDownClick(int id, int position) {
             switch (id) {
                 case 0:
-                    deleteAd(position);
+                    deleteAdvert(position);
                     break;
-                case 1:
-                    break;
-                case 2:
+                default:
                     break;
             }
         }

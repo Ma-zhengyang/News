@@ -3,7 +3,6 @@ package com.example.mazhengyang.news.Adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.example.mazhengyang.news.Bean.ChannelBean;
@@ -35,7 +34,8 @@ public class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
     public void setData(List<ChannelBean.Channel> channelList) {
         selectChannels = channelList;
 
-        Log.d(TAG, "setData: fill list");
+        Logger.d(TAG, "setData: fill list");
+
         for (int i = 0; i < channelList.size(); i++) {
             mFragments.add(i, null);
         }
@@ -58,27 +58,6 @@ public class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
 
         Logger.d(TAG, "getItem: position=" + position);
         Logger.d(TAG, "getItem: mFragments.size()=" + mFragments.size());
-
-        //   AndroidRuntime: java.lang.IllegalStateException: Can't change tag of fragment ContentFragment
-        // {ce34458 id=0x7f090885 android:switcher:2131298437:6}: was android:switcher:2131298437:6 now android:switcher:2131298437:4
-
-//        if (position < mFragments.size()) {
-//            Fragment fm = mFragments.get(position);
-//            Logger.d(TAG, "getItem: return fragment=" + fm);
-//            if(fm != null) {
-//                return mFragments.get(position);
-//            }
-////            Logger.d(TAG, "getItem: return tag=" + mTags);
-////            ContentFragment fm = (ContentFragment ) fragmentManager.findFragmentByTag(mTags);
-////            Logger.d(TAG, "getItem: return fragment=" + fm);
-//        }
-//
-//        ContentFragment fragment = new ContentFragment();
-//        fragment.setTitleType(selectChannels.get(position).getName(),
-//                selectChannels.get(position).getType());
-//        mFragments.add(fragment);
-//        Logger.d(TAG, "getItem: new fragment=" + fragment);
-//        return fragment;
 
         if (mFragments.get(position) != null) {
             return mFragments.get(position);

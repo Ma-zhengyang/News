@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +16,7 @@ import com.beardedhen.androidbootstrap.BootstrapDropDown;
 import com.bumptech.glide.Glide;
 import com.example.mazhengyang.news.Animation.AlphaInAnimation;
 import com.example.mazhengyang.news.Animation.BaseAnimation;
-import com.example.mazhengyang.news.Bean.AdBean;
+import com.example.mazhengyang.news.Bean.AdvertBean;
 import com.example.mazhengyang.news.Bean.NewsBean;
 import com.example.mazhengyang.news.R;
 import com.example.mazhengyang.news.util.Logger;
@@ -43,17 +43,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_AD = 1;
 
     private boolean mOpenAnimationEnable = true;
-    private BaseAnimation mSelectAnimation = new AlphaInAnimation();
-    private Interpolator mInterpolator = new LinearInterpolator();
+    private BaseAnimation mSelectedAnimation = new AlphaInAnimation();
+    private Interpolator mInterpolator = new AccelerateInterpolator();
     private int mDuration = 300;
     private int mLastPosition = -1;
+    private boolean advertAdded = false;
 
     private OnNewsItemClickListener mOnNewsItemClickListener;
 
     public interface OnNewsItemClickListener {
         void onNewsItemClick(View view, int position);
 
-        void onAdDropDownClick(int id, int position);
+        void onAdvertDropDownClick(int id, int position);
     }
 
     public void setOnNewsItemClickListener(OnNewsItemClickListener listener) {
@@ -67,20 +68,25 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void add(NewsBean newsBean) {
         int i = getItemCount();
-
         for (NewsBean.Entity b : newsBean.getEntitylist()) {
-
-            if (i == 12) {//insert ads
-                AdBean ad = new AdBean();
-                mNewsBeanList.add(i, ad);
-            } else {
-                mNewsBeanList.add(i, b);
-            }
-
+            mNewsBeanList.add(i, b);
             this.notifyItemInserted(i);
             i++;
         }
 //        this.notifyDataSetChanged();
+    }
+
+    public void addAdvert(int position) {
+
+        if (!advertAdded && getItemCount() > 15) {
+            Logger.d(TAG, "addAdvert: ");
+            AdvertBean advertBean = new AdvertBean();
+            mNewsBeanList.add(position, advertBean);
+
+            this.notifyItemInserted(position);
+            advertAdded = true;
+        }
+
     }
 
     public void remove(int position) {
@@ -90,7 +96,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void clear() {
+        Logger.d(TAG, "clear: ");
         mNewsBeanList.clear();
+        mLastPosition = -1;
+        advertAdded = false;
         this.notifyDataSetChanged();
     }
 
@@ -107,8 +116,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_ad, parent, false);
-            AdItemViewHolder vh = new AdItemViewHolder(v);
+                    .inflate(R.layout.item_advert, parent, false);
+            AdvertItemViewHolder vh = new AdvertItemViewHolder(v);
             return vh;
         }
     }
@@ -117,19 +126,27 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         if (mNewsBeanList.get(position) instanceof NewsBean.Entity) {
-            Logger.d(TAG, "onBindViewHolder: position" + position + ", news");
+            Logger.d(TAG, "onBindViewHolder: position=" + position + ", news");
             NewsBean.Entity b = (NewsBean.Entity) mNewsBeanList.get(position);
-            ((NewsItemViewHolder) holder).mTitle.setText(b.getTitle());
-            ((NewsItemViewHolder) holder).mDesc.setText(b.getDescription());
+
+            TextView title = ((NewsItemViewHolder) holder).mTitle;
+            TextView desc = ((NewsItemViewHolder) holder).mDesc;
+            ImageView img = ((NewsItemViewHolder) holder).mImg;
+            img.setImageDrawable(null);
+
+            title.setText(b.getTitle());
+            desc.setText(b.getDescription());
             Glide.with(mContext)
                     .load(b.getPicUrl())
                     .placeholder(R.drawable.ic_image_loading)
                     .error(R.drawable.ic_image_loadfail)
-                    .into(((NewsItemViewHolder) holder).mImg);
+                    .into(img);
             addAnimation(holder);
+
+//            Logger.d(TAG, "onBindViewHolder: " + holder.itemView.getRootView().getWidth() + " " + position);
         } else {
             Logger.d(TAG, "onBindViewHolder: position" + position + ", ads");
-            AdBean ad = (AdBean) mNewsBeanList.get(position);
+//            AdvertBean ad = (AdvertBean) mNewsBeanList.get(position);
 //            ((AdItemViewHolder) holder).mImg.setImageResource(R.drawable.ic_image_ad);
         }
 
@@ -170,10 +187,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mOnNewsItemClickListener.onNewsItemClick(v, this.getPosition());
             }
         }
-
     }
 
-    public class AdItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+    public class AdvertItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             BootstrapDropDown.OnDropDownItemClickListener {
 
         @BindView(R.id.ivImage)
@@ -181,7 +197,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.bootstrap)
         BootstrapDropDown mBootstrapDropDown;
 
-        public AdItemViewHolder(View itemView) {
+        public AdvertItemViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
@@ -191,14 +207,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @Override
         public void onItemClick(ViewGroup parent, View v, int id) {
             if (mOnNewsItemClickListener != null) {
-                mOnNewsItemClickListener.onAdDropDownClick(id, this.getPosition());
+                mOnNewsItemClickListener.onAdvertDropDownClick(id, this.getPosition());
             }
         }
 
         @Override
         public void onClick(View v) {
             if (mOnNewsItemClickListener != null) {
-                Toast.makeText(mContext, "Ad clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Advert clicked", Toast.LENGTH_SHORT).show();
 //                mOnNewsItemClickListener.onNewsItemClick(v, this.getPosition());
             }
         }
@@ -206,15 +222,15 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void openLoadAnimation(BaseAnimation animation) {
         this.mOpenAnimationEnable = true;
-        this.mSelectAnimation = animation;
+        this.mSelectedAnimation = animation;
     }
 
     public void addAnimation(RecyclerView.ViewHolder holder) {
         if (mOpenAnimationEnable) {
             if (holder.getLayoutPosition() > mLastPosition) {
                 BaseAnimation animation = null;
-                if (mSelectAnimation != null) {
-                    animation = mSelectAnimation;
+                if (mSelectedAnimation != null) {
+                    animation = mSelectedAnimation;
                 }
                 for (Animator anim : animation.getAnimators(holder.itemView)) {
                     startAnim(anim, holder.getLayoutPosition());
@@ -224,7 +240,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    private void startAnim(Animator anim, int index) {
+    private void startAnim(Animator anim, final int index) {
+//        ((ValueAnimator) anim).addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                Logger.d(TAG, "onAnimationUpdate: " + index);
+//                Logger.d(TAG, "onAnimationUpdate: " + animation.getAnimatedValue());
+//            }
+//        });
         anim.setDuration(mDuration).start();
         anim.setInterpolator(mInterpolator);
     }

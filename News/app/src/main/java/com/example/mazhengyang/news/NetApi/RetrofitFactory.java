@@ -27,9 +27,9 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
  * Created by mazhengyang on 18-8-17.
  */
 
-public class RetrofitService {
+public class RetrofitFactory {
 
-    private static final String TAG = RetrofitService.class.getSimpleName();
+    private static final String TAG = RetrofitFactory.class.getSimpleName();
 
     public static final String APIKEY = "1a4cc37dc9ba13bc37616a47b61130e6";
 
@@ -49,17 +49,17 @@ public class RetrofitService {
     private static final String CACHE_CONTROL_CACHE = "only-if-cached, max-stale=" + CACHE_TIME;
     private static final String CACHE_CONTROL_AGE = "max-age=0";
 
-    private static NewsApi sNewsService;
-    private static RetrofitService mRetrofitService;
+    private static NewsApi newsApi;
+    private static RetrofitFactory mRetrofitFactory;
 
-    public static RetrofitService Builder() {
-        if (mRetrofitService == null) {
-            synchronized (RetrofitService.class) {
-                mRetrofitService = new RetrofitService();
+    public static RetrofitFactory Builder() {
+        if (mRetrofitFactory == null) {
+            synchronized (RetrofitFactory.class) {
+                mRetrofitFactory = new RetrofitFactory();
             }
         }
 
-        if (sNewsService == null) {
+        if (newsApi == null) {
 
             String external = NewsApplication.getAppContext().getExternalCacheDir().toString();
             String cacheDir = NewsApplication.getAppContext().getCacheDir().toString();
@@ -88,14 +88,14 @@ public class RetrofitService {
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
-            sNewsService = retrofit.create(NewsApi.class);
+            newsApi = retrofit.create(NewsApi.class);
         }
 
-        return mRetrofitService;
+        return mRetrofitFactory;
     }
 
     public static Observable<NewsBean> getNewsList(final String type, final int num, final int page) {
-        return sNewsService.getNewsList(getCacheControl(), type, APIKEY, num, page);
+        return newsApi.getNewsList(getCacheControl(), type, APIKEY, num, page);
     }
 
     @NonNull

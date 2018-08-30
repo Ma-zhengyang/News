@@ -1,6 +1,7 @@
 package com.example.mazhengyang.news.Animation;
 
 import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.view.View;
 
 /**
@@ -8,5 +9,5 @@ import android.view.View;
  */
 
 public interface BaseAnimation {
-    Animator[] getAnimators(View view);
+    ValueAnimator[] getAnimators(View view);
 }

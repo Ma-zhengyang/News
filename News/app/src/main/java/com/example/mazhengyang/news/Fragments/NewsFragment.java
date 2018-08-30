@@ -64,7 +64,7 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
 
         NewsFragmentPagerAdapter adapter = new NewsFragmentPagerAdapter(getChildFragmentManager());
         adapter.setData(selectChannels);
-        mViewPager.setOffscreenPageLimit(3);
+//        mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(adapter);
 
         mTablayout.setupWithViewPager(mViewPager);
