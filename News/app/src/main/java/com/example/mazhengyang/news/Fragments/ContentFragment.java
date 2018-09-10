@@ -13,17 +13,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.mazhengyang.news.Adapter.NewsAdapter;
 import com.example.mazhengyang.news.Animation.ScaleInAnimation;
-import com.example.mazhengyang.news.Animation.SlideInRightAnimation;
 import com.example.mazhengyang.news.Bean.NewsBean;
+import com.example.mazhengyang.news.NewsApplication;
 import com.example.mazhengyang.news.NewsDetailActivity;
 import com.example.mazhengyang.news.Present.INewsPresent;
 import com.example.mazhengyang.news.Present.NewsPresentImpl;
 import com.example.mazhengyang.news.R;
 import com.example.mazhengyang.news.View.INewsView;
 import com.example.mazhengyang.news.util.Logger;
+import com.example.mazhengyang.news.util.NetWorkUtil;
 import com.example.mazhengyang.news.util.RecycleViewDivider;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -92,7 +94,14 @@ public class ContentFragment extends Fragment implements INewsView {
 
                 @Override
                 public void onRefresh(RefreshLayout refreshLayout) {
-                    Logger.d(TAG, "onRefresh: ");
+                    boolean netAvailable = NetWorkUtil.isNetWorkConnected(NewsApplication.getAppContext());
+                    Logger.d(TAG, "onRefresh: netAvailable=" + netAvailable);
+                    if (!netAvailable) {
+                        Toast.makeText(getContext(), getContext().getText(R.string.net_not_connect),
+                                Toast.LENGTH_SHORT).show();
+                        mRefreshLayout.finishRefresh();
+                        return;
+                    }
                     page = 0;
                     mNewsAdapter.clear();
                     load();
@@ -100,7 +109,14 @@ public class ContentFragment extends Fragment implements INewsView {
 
                 @Override
                 public void onLoadMore(RefreshLayout refreshLayout) {
-                    Logger.d(TAG, "onLoadMore: ");
+                    boolean netAvailable = NetWorkUtil.isNetWorkConnected(NewsApplication.getAppContext());
+                    Logger.d(TAG, "onLoadMore: netAvailable=" + netAvailable);
+                    if (!netAvailable) {
+                        Toast.makeText(getContext(), getContext().getText(R.string.net_not_connect),
+                                Toast.LENGTH_SHORT).show();
+                        mRefreshLayout.finishLoadMore();
+                        return;
+                    }
                     load();
                 }
 
@@ -113,8 +129,13 @@ public class ContentFragment extends Fragment implements INewsView {
             }
         }
 
-        if (mNewsAdapter.getItemCount() <= 0) {
-            mRefreshLayout.autoRefresh();
+        boolean netAvailable = NetWorkUtil.isNetWorkConnected(NewsApplication.getAppContext());
+        if (netAvailable) {
+            if (mNewsAdapter.getItemCount() == 0) {
+                mRefreshLayout.autoRefresh();
+            }
+        } else {
+            Logger.d(TAG, "network not available!");
         }
 
         return rootView;

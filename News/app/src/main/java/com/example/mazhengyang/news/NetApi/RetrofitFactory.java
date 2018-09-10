@@ -31,8 +31,6 @@ public class RetrofitFactory {
 
     private static final String TAG = RetrofitFactory.class.getSimpleName();
 
-    public static final String APIKEY = "1a4cc37dc9ba13bc37616a47b61130e6";
-
     private static final String NEWS_HOST = "https://api.tianapi.com/";
 
     /**
@@ -55,7 +53,9 @@ public class RetrofitFactory {
     public static RetrofitFactory Builder() {
         if (mRetrofitFactory == null) {
             synchronized (RetrofitFactory.class) {
-                mRetrofitFactory = new RetrofitFactory();
+                if (mRetrofitFactory == null) {
+                    mRetrofitFactory = new RetrofitFactory();
+                }
             }
         }
 
@@ -95,12 +95,17 @@ public class RetrofitFactory {
     }
 
     public static Observable<NewsBean> getNewsList(final String type, final int num, final int page) {
-        return newsApi.getNewsList(getCacheControl(), type, APIKEY, num, page);
+        return newsApi.getNewsList(getCacheControl(), type, getApikey(), num, page);
     }
 
     @NonNull
     public static String getCacheControl() {
         return NetWorkUtil.isNetWorkConnected(NewsApplication.getAppContext()) ? CACHE_CONTROL_AGE : CACHE_CONTROL_CACHE;
+    }
+
+    @NonNull
+    public static String getApikey() {
+        return NewsApplication.getApikey();
     }
 
     private static final Interceptor sLoggingInterceptor = new Interceptor() {
@@ -109,7 +114,7 @@ public class RetrofitFactory {
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
 
-            Logger.d(TAG, String.format("request: %s", request.url()));
+//            Logger.d(TAG, String.format("request: %s", request.url()));
 
             Response response = chain.proceed(request);
 
@@ -122,14 +127,14 @@ public class RetrofitFactory {
         @Override
         public Response intercept(Chain chain) throws IOException {
 
-            boolean available = NetWorkUtil.isNetWorkConnected(NewsApplication.getAppContext());
-            Logger.d(TAG, "available=" + available);
+            boolean netAvailable = NetWorkUtil.isNetWorkConnected(NewsApplication.getAppContext());
+            Logger.d(TAG, "netAvailable=" + netAvailable);
 
             Request request = chain.request();
             String cacheControl = request.cacheControl().toString();
             Logger.d(TAG, "cacheControl=" + cacheControl);
 
-            if (!available) {
+            if (!netAvailable) {
                 request = request.newBuilder()
                         .cacheControl(TextUtils.isEmpty(cacheControl) ? CacheControl.FORCE_NETWORK : CacheControl.FORCE_CACHE)
                         .build();

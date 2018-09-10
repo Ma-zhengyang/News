@@ -17,6 +17,10 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:name=".NewsApplication">
 
+        <meta-data
+            android:name="API_KEY"
+            android:value="1a4cc37dc9ba13bc37616a47b61130e6" />
+
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>

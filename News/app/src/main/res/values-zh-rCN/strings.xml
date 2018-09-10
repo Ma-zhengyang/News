@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">新闻</string>
     <string name="ad">广告</string>
+    <string name="net_not_connect">网络未连接</string>
     <string name="channel_selected">已选频道</string>
     <string name="channel_unselected">未选频道</string>
-    <string name="channel_edit">长按编辑</string>
+    <string name="channel_selected_edit">长按编辑 拖拽排序</string>
+    <string name="channel_unselected_edit">点击添加</string>
 
     <array name="ad_dropdown">
         <item>{dropdown_header}赞助商提供的广告信息</item>
